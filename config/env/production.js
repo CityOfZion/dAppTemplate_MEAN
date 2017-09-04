@@ -3,6 +3,9 @@
 var fs = require('fs');
 
 module.exports = {
+  blockchain: {
+    neo: {network: 'mainnet'}
+  },
   secure: {
     ssl: true,
     privateKey: './config/sslcerts/key.pem',

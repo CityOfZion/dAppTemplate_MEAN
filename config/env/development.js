@@ -3,7 +3,6 @@
 var defaultEnvConfig = require('./default');
 
 module.exports = {
-  domain: 'http://ec2-54-174-71-164.compute-1.amazonaws.com',
   blockchain: {
     neo: {network: 'testnet'}
   },
