@@ -27,31 +27,24 @@ var neoSeeds = [
 
 //build the list of neo-maintained nodes
 neoSeeds.forEach(function(domain){
-  nodes.push({
-    domain: domain,
-    port: port,
-    node: new node(
+  nodes.push(new node(
       {
        domain: domain,
        port: port
-      })
-  });
+      }
+  ))
 });
 
 
 //build the list of CoZ maintained nodes
 var cozNodes = [1,2,3,4,5].map(function(i){
   var domain = 'http://' + cozNetwork + i + '.cityofzion.io';
-  nodes.push({
-    domain: domain,
-    port: cozPort,
-    node: new node(
+  nodes.push(new node(
       {
         domain: domain,
         port: cozPort,
       }
-    )
-  });
+  ))
 });
 
 
@@ -60,24 +53,32 @@ function node(conf){
 
   this.domain = conf.domain;
   this.port = conf.port;
+  this.age = 0;
+  this.active = true;
+  this.latency = 0;
+  this.blockHeight = 0;
 
   this.call = function(payload){
-    var addr = this.domain + ':' + this.port;
+    var node = this;
 
     return new Promise(function( resolve, reject) {
       var t0 = Date.now();
 
       axios({
         method: 'post',
-        url: addr,
+        url: node.domain + ':' + node.port,
         data: {"jsonrpc": "2.0", "method": payload.method, "params": payload.params, "id": payload.id},
         timeout: 5000
       })
         .then(function (response) {
-          response.data.latency = Date.now() - t0;
+          node.age = Date.now();
+          node.latency = node.age - t0;
+          node.active = true;
           resolve(response.data);
         })
         .catch(function (err) {
+          node.age = Date.now();
+          node.active = false;
           return reject(err);
         });
     });
