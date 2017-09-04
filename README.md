@@ -10,33 +10,21 @@
   A dApp template for the <b>NEO</b> blockchain built on the MEAN stack.
 </p>
 
+*note: This template is based on the meanjs project found [here](https://github.com/meanjs/mean)
 
-## Downloading MEAN.JS
-There are several ways you can get the MEAN.JS boilerplate:
+## Deployment ##
 
 ### Cloning The GitHub Repository
-The recommended way to get MEAN.js is to use git to directly clone the MEAN.JS repository:
+The recommended way to get this template is to use git to directly clone the the repository:
 
 ```bash
 $ git clone https://github.com/CityOfZion/dAppTemplate_MEAN.git myProject
 ```
 
-This will clone the latest version of the MEAN.JS repository to a **meanjs** folder.
-
-### Downloading The Repository Zip File
-Another way to use the MEAN.JS boilerplate is to download a zip copy from the [master branch on GitHub](https://github.com/meanjs/mean/archive/master.zip). You can also do this using the `wget` command:
-
-```bash
-$ wget https://github.com/meanjs/mean/archive/master.zip -O meanjs.zip; unzip meanjs.zip; rm meanjs.zip
-```
-
-Don't forget to rename **mean-master** after your project name.
-
-### Yo Generator
-Another way would be to use the [Official Yo Generator](http://meanjs.org/generator.html), which generates a copy of the MEAN.JS 0.4.x boilerplate and supplies an application generator to ease your daily development cycles.
+This will clone the latest version of the MEAN.JS repository to a **myProject** folder.
 
 ## Quick Install
-Once you've downloaded the boilerplate and installed all the prerequisites, you're just a few steps away from starting to develop your MEAN application.
+Once you've cloned the repo and installed all the prerequisites, you're just a few steps away from interfacing with the neo blockchain and building your application.
 
 The boilerplate comes pre-bundled with a `package.json` and `bower.json` files that contain the list of modules you need to start your application.
 
@@ -66,6 +54,8 @@ That's it! Your application should be running. To proceed with your development,
 If you encounter any problems, try the Troubleshooting section.
 
 Explore `config/env/development.js` for development environment configuration options.
+
+*Note: development mode will sync to the testnet and production mode will sync to mainnet.  Parallel syncronization is not currently supported.  
 
 ### Running in Production mode
 To run your application with *production* environment configuration:
