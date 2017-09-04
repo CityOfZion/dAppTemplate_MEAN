@@ -11,10 +11,6 @@
 </p>
 
 
-```bash
-$ npm install -g bower
-```
-
 ## Downloading MEAN.JS
 There are several ways you can get the MEAN.JS boilerplate:
 
@@ -22,7 +18,7 @@ There are several ways you can get the MEAN.JS boilerplate:
 The recommended way to get MEAN.js is to use git to directly clone the MEAN.JS repository:
 
 ```bash
-$ git clone https://github.com/meanjs/mean.git meanjs
+$ git clone https://github.com/CityOfZion/dAppTemplate_MEAN.git myProject
 ```
 
 This will clone the latest version of the MEAN.JS repository to a **meanjs** folder.
