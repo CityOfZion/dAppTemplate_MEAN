@@ -57,6 +57,7 @@ function node(conf){
   this.active = true;
   this.latency = 0;
   this.blockHeight = 0;
+  this.connections = 0;
 
   this.call = function(payload){
     var node = this;

@@ -14,20 +14,79 @@ function neo(){
   this.nodes = conf.nodes;
   var blockchain = this;
 
-
-
-  this.getBalance = function(asset_id){
+  this.getBalance = function(asset_id, node){
     return new Promise(function(resolve, reject){
+      var failOver = false;
+      if (!node){
+        node = fastestNode();
+        failOver = true;
+      }
 
+      if (!node){
+        reject({"message": "Could not identify an active node"});
+      }
+
+      node.call({
+        method: "getbalance",
+        params: [],
+        id: 0
+      })
+        .then(function (data) {
+          resolve(data.result);
+        })
+        .catch(function (err) {
+          if (failOver) {
+            blockchain.getBalance(index)
+              .then(function (data) {
+                resolve(data);
+              })
+              .catch(function (err) {
+                reject(err);
+              })
+          }
+          else {
+            reject({"message": "Unable to contact the requested node."})
+          }
+        })
     })
   };
 
-  this.getBestBlockHash = function(){
+  this.getBestBlockHash = function(node){
     return new Promise(function(resolve, reject){
+      var failOver = false;
+      if (!node){
+        node = fastestNode();
+        failOver = true;
+      }
 
+      if (!node){
+        reject({"message": "Could not identify an active node"});
+      }
+
+      node.call({
+        method: "getbestblockhash",
+        params: [],
+        id: 0
+      })
+        .then(function (data) {
+          resolve(data.result);
+        })
+        .catch(function (err) {
+          if (failOver) {
+            blockchain.getBestBlockHash(index)
+              .then(function (data) {
+                resolve(data);
+              })
+              .catch(function (err) {
+                reject(err);
+              })
+          }
+          else {
+            reject({"message": "Unable to contact the requested node."})
+          }
+        })
     })
   };
-
 
   /**
    * @ngdoc method
@@ -76,7 +135,6 @@ function neo(){
         });
     })
   };
-
 
   /**
    * @ngdoc method
@@ -129,7 +187,6 @@ function neo(){
     })
   };
 
-
   /**
    * @ngdoc method
    * @name getBlockHash
@@ -178,48 +235,242 @@ function neo(){
     })
   };
 
-  this.getConnectionCount = function(){
+  /**
+   * @ngdoc method
+   * @name getConnectionCount
+   * @methodOf neo.blockchain.core
+   * @description
+   * Invokes the getconnectioncount rpc request to return the number of connections to
+   * the selected node.
+   *
+   * @param {node} node The node to request the connections of.
+   * @returns {Promise} A promise returning the number of connections to the node.
+   */
+  this.getConnectionCount = function(node){
     return new Promise(function(resolve, reject){
+      if (!node){
+        reject({"message": "Could not identify an active node"});
+      }
 
+      node.call({
+        method: "getconnectioncount",
+        params: [],
+        id: 0
+      })
+        .then(function (data) {
+          node.connections = data.result;
+          resolve(data.result);
+        })
+        .catch(function (err) {
+            reject({"message": "Unable to contact the requested node."})
+        })
     })
   };
 
-  this.getRawMemPool = function(){
+  this.getRawMemPool = function(node){
     return new Promise(function(resolve, reject){
+      if (!node){
+        reject({"message": "Could not identify an active node"});
+      }
 
+      node.call({
+        method: "getrawmempool",
+        params: [],
+        id: 0
+      })
+        .then(function (data) {
+          resolve(data.result);
+        })
+        .catch(function (err) {
+          reject({"message": "Unable to contact the requested node."})
+        })
     })
   };
 
-  this.getRawTransaction = function(txid){
+  this.getRawTransaction = function(txid, node){
     return new Promise(function(resolve, reject){
+      var failOver = false;
+      if (!node){
+        node = fastestNode();
+        failOver = true;
+      }
 
+      if (!node){
+        reject({"message": "Could not identify an active node"});
+      }
+
+      node.call({
+        method: "getrawtransaction",
+        params: [txid],
+        id: 0
+      })
+        .then(function (data) {
+          resolve(data.result);
+        })
+        .catch(function (err) {
+          if (failOver) {
+            blockchain.getRawTransaction(index)
+              .then(function (data) {
+                resolve(data);
+              })
+              .catch(function (err) {
+                reject(err);
+              })
+          }
+          else {
+            reject({"message": "Unable to contact the requested node."})
+          }
+        })
     })
   };
 
-  this.gettxout = function(txid){
+  this.getTXOut = function(txid, node){
     return new Promise(function(resolve, reject){
+      var failOver = false;
+      if (!node){
+        node = fastestNode();
+        failOver = true;
+      }
 
+      if (!node){
+        reject({"message": "Could not identify an active node"});
+      }
+
+      node.call({
+        method: "gettxout",
+        params: [txid],
+        id: 0
+      })
+        .then(function (data) {
+          resolve(data.result);
+        })
+        .catch(function (err) {
+          if (failOver) {
+            blockchain.getTXOut(index)
+              .then(function (data) {
+                resolve(data);
+              })
+              .catch(function (err) {
+                reject(err);
+              })
+          }
+          else {
+            reject({"message": "Unable to contact the requested node."})
+          }
+        })
     })
   };
 
-  this.sendRawTransaction = function(hex){
+  this.sendRawTransaction = function(hex, node){
     return new Promise(function(resolve, reject){
+      var failOver = false;
+      if (!node){
+        node = fastestNode();
+        failOver = true;
+      }
 
+      if (!node){
+        reject({"message": "Could not identify an active node"});
+      }
+
+      node.call({
+        method: "sendrawtransaction",
+        params: [hex],
+        id: 0
+      })
+        .then(function (data) {
+          resolve(data.result);
+        })
+        .catch(function (err) {
+          if (failOver) {
+            blockchain.sendRawTransaction(index)
+              .then(function (data) {
+                resolve(data);
+              })
+              .catch(function (err) {
+                reject(err);
+              })
+          }
+          else {
+            reject({"message": "Unable to contact the requested node."})
+          }
+        })
     })
   };
 
-  this.sendToAddress = function(asset_id, address, value){
+  this.sendToAddress = function(asset_id, address, value, node){
     return new Promise(function(resolve, reject){
+      var failOver = false;
+      if (!node){
+        node = fastestNode();
+        failOver = true;
+      }
 
+      if (!node){
+        reject({"message": "Could not identify an active node"});
+      }
+
+      node.call({
+        method: "sendtoaddress",
+        params: [asset_id, address, value],
+        id: 0
+      })
+        .then(function (data) {
+          resolve(data.result);
+        })
+        .catch(function (err) {
+          if (failOver) {
+            blockchain.sendToAddress(index)
+              .then(function (data) {
+                resolve(data);
+              })
+              .catch(function (err) {
+                reject(err);
+              })
+          }
+          else {
+            reject({"message": "Unable to contact the requested node."})
+          }
+        })
     })
   };
 
-  this.submitBlock = function(hex){
+  this.submitBlock = function(hex, node){
     return new Promise(function(resolve, reject){
+      var failOver = false;
+      if (!node){
+        node = fastestNode();
+        failOver = true;
+      }
 
+      if (!node){
+        reject({"message": "Could not identify an active node"});
+      }
+
+      node.call({
+        method: "submitblock",
+        params: [hex],
+        id: 0
+      })
+        .then(function (data) {
+          resolve(data.result);
+        })
+        .catch(function (err) {
+          if (failOver) {
+            blockchain.submitBlock(index)
+              .then(function (data) {
+                resolve(data);
+              })
+              .catch(function (err) {
+                reject(err);
+              })
+          }
+          else {
+            reject({"message": "Unable to contact the requested node."})
+          }
+        })
     })
   };
-
 
   /**
    * @ngdoc method
@@ -247,20 +498,18 @@ function neo(){
         }
         used.push(selection);
         blockchain.getBlockCount(blockchain.nodes[selection])
-          .then(function () {
+          .catch(function (err) {
+          })
+          .then(function(){
             ret++;
             if (ret == updateCount) {
               resolve();
             }
           })
-          .catch(function (err) {
-          })
       }
     });
   };
-  this.updateBlockCount();
-
-
+  //this.updateBlockCount();
 
   function fastestNode(){
     var activeNodes = _.filter(blockchain.nodes, 'active');
@@ -268,11 +517,6 @@ function neo(){
   }
 }
 
-var blockchainNeo = new neo();
-/*
-blockchainNeo.updateBlockCount().then(function(){
-  blockchainNeo.getBlock(1,2).then(function(res){
-    console.log(res);
-  })
-});
-*/
+exports.neo = neo;
+
+
