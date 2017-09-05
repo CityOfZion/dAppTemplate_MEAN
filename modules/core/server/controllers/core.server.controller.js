@@ -3,17 +3,16 @@
   var path = require('path'),
   config = require(path.resolve('./config/config')),
   neo = require('./neo.blockchain.core.js');
+
 /**
  * Render the main application page
  */
 
 
-var blockchainNeo = new neo.neo('testnet');
+var blockchainNeo = new neo.neo('full', 'testnet');
 
 blockchainNeo.updateBlockCount().then(function(){
-  blockchainNeo.rpc.getBlock(100).then(function(res){
-    console.log(res)
-  })
+  blockchainNeo.sync.checkBlocks();
 });
 
 

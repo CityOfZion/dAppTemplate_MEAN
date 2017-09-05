@@ -97,7 +97,7 @@ module.exports = function(blockchain){
     return new Promise(function(resolve, reject){
       var failOver = false;
       if (!node){
-        node = blockchain.fastestNode();
+        node = blockchain.nodeWithBlock(index);
         failOver = true;
       }
       if (!node) reject('Could not identify an active node');
@@ -192,7 +192,7 @@ module.exports = function(blockchain){
     return new Promise(function(resolve, reject){
       var failOver = false;
       if (!node){
-        node = blockchain.fastestNode();
+        node = blockchain.nodeWithBlock(index);
         failOver = true;
       }
       if (!node) reject('Could not identify an active node');

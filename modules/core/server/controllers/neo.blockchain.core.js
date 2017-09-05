@@ -5,19 +5,26 @@
  * @requires neo.blockchain.conf
  * @description
  * A controller which defines the neo blockchain prototype.
- * @param {String} mode sets whether the library should run in full or light mode.
+ * @param {String} mode Sets whether the library should run in full or light mode.
  * Options: 'full' , 'light'
+ * @param {String} network Indicates which network to operate the instance on.
+ * Options: 'testnet', 'mainnet'
  */
 
 function neo(mode, network){
-  //load the bootstrap configuration data
+  var blockchain = this;
   var _ = require('lodash');
 
   this.nodes = require('./neo.blockchain.conf')(network).nodes;
   this.rpc = require('./neo.blockchain.rpc')(this);
+  this.db = require('./neo.blockchain.db')(network);
+  this.sync = require('./neo.blockchain.sync')(this);
+
   this.mode = mode;
+  this.network = network;
 
   var blockchain = this;
+
 
   /**
    * @ngdoc method
@@ -70,7 +77,21 @@ function neo(mode, network){
   this.fastestNode = function(){
     var activeNodes = _.filter(blockchain.nodes, 'active');
     return _.minBy(activeNodes, 'latency');
+  };
+
+  this.highestNode = function(){
+    var activeNodes = _.filter(blockchain.nodes, 'active');
+    return _.maxBy(activeNodes, 'blockHeight');
+  };
+
+  this.nodeWithBlock = function(index){
+    var nodes = _.filter(blockchain.nodes, function(node){
+      return (node.active) && (index < node.blockHeight);
+    });
+    return _.minBy(nodes, 'latency');
   }
+
+
 }
 
 exports.neo = neo;
