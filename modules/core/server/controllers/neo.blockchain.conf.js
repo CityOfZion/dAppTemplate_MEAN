@@ -1,4 +1,11 @@
-
+/**
+ * @ngdoc controller
+ * @name neo.blockchain.conf
+ * @description
+ * A controller which defines the neo blockchain connection settings.
+ * @param {String} network the network to connect to.
+ * Options: 'testnet', 'mainnet'
+ */
 module.exports = function(network) {
   var module = {
     nodes: []
