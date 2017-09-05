@@ -12,7 +12,8 @@
 var blockchainNeo = new neo.neo('full', 'testnet');
 
 blockchainNeo.updateBlockCount().then(function(){
-  blockchainNeo.sync.checkBlocks();
+  blockchainNeo.sync.start();
+
 });
 
 

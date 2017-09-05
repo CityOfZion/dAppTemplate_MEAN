@@ -63,7 +63,7 @@ function neo(mode, network){
       }
     });
   };
-  //this.updateBlockCount();
+  setInterval(this.updateBlockCount, 10000);
 
   /**
    * @ngdoc method

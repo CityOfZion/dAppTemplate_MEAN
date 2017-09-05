@@ -2,35 +2,38 @@ module.exports = function(blockchain){
   var module = {};
 
   var async = require('async');
+  var runLock = false;
+  var workerCount = 10;
+  var maxQueueLength = 1000;
 
-  var workerCount = 2;
-  var maxQueueLength = 100;
-
-  var queue = async.queue(function(block, callback) {
-    module.storeBlock(block)
+  var queue = async.queue(function(task, callback) {
+    task.method(task.attrs)
       .then(function(){
-        console.log('Synced: ' + block);
+        console.log(task.attrs);
+        callback();
       });
-    callback()
   }, workerCount);
 
-  var async = require('async');
+  queue.empty = function(){
+    module.checkBlocks();
+  };
+  queue.pause();
 
   module.start = function(){
-
-  }
+    queue.resume();
+  };
 
   module.stop = function(){
+    queue.pause();
+  };
 
-  }
+  module.setWorkers = function(count){
+    queue.concurrency = count;
+  };
 
-  module.setWorkers = function(){
-
-  }
-
-  module.storeBlock = function(index){
+  module.storeBlock = function(attrs){
     return new Promise(function(resolve, reject) {
-      blockchain.rpc.getBlock(index)
+      blockchain.rpc.getBlock(attrs.index)
         .then(function (res) {
           var block = blockchain.db.blocks(res);
           block.save(function (err) {
@@ -45,28 +48,40 @@ module.exports = function(blockchain){
   };
 
   module.checkBlocks = function(){
+    return new Promise(function(resolve, reject) {
+      var nextBlock = 0;
+      var remoteHeight = 0;
+      var addNumber = 0;
 
-    var nextBlock = 0;
-    var remoteHeight = 0;
-    var addNumber = 0;
+      blockchain.db.blocks.findOne({}, 'index')
+        .sort('-index')
+        .exec(function (err, res) {
+          if (!res) res = {'index': -1};
+          remoteHeight = blockchain.highestNode().blockHeight;
+          nextBlock = res.index + 1;
 
-    blockchain.db.blocks.findOne({}, 'index')
-      .sort('-index')
-      .exec(function (err, res) {
-        if (!res) res = {'index': -1};
-        remoteHeight = blockchain.highestNode().blockHeight;
-        nextBlock = res.index + 1;
-
-        if (nextBlock <= remoteHeight){
-          addNumber = Math.min(maxQueueLength - queue.length(), remoteHeight - (nextBlock - 1));
-          for (var i = 0; i <= addNumber; i++){
-            queue.push(nextBlock + i, function(){});
+          if (nextBlock <= remoteHeight) {
+            addNumber = Math.min(maxQueueLength - queue.length(), remoteHeight - (nextBlock - 1));
+            for (var i = 0; i < addNumber; i++) {
+              queue.push({
+                method: module.storeBlock,
+                attrs: {
+                  index: nextBlock + i,
+                  max: remoteHeight,
+                  percent: (nextBlock + i)/remoteHeight * 100
+                }
+              }, function () {
+              });
+            }
           }
-        }
-      });
-
+          resolve();
+        });
+    })
   };
-
+  module.checkBlocks();
+  setInterval(function() {
+    if (queue.length() == 0) module.checkBlocks();
+  }, 10000);
 
   return module
 };
