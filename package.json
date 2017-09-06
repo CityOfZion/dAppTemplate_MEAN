@@ -111,6 +111,7 @@
     "run-sequence": "~2.1.0",
     "semver": "~5.4.1",
     "should": "~11.2.1",
-    "supertest": "~3.0.0"
+    "supertest": "~3.0.0",
+    "neo-js-blockchain": "latest"
   }
 }

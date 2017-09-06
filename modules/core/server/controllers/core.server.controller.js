@@ -2,7 +2,7 @@
 
   var path = require('path'),
   config = require(path.resolve('./config/config')),
-  neo = require('./neo.blockchain.core.js');
+  neo = require('neo-js-blockchain');
 
 /**
  * Render the main application page
